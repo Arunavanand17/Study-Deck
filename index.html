@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEM-03 // Study Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0A0C0F;
+    --panel:#12151A;
+    --panel-raised:#181C22;
+    --panel-hover:#1E232B;
+    --border:#23272E;
+    --border-soft:#1A1E24;
+    --amber:#FF9F1C;
+    --amber-dim:#8A5A16;
+    --teal:#2EC4B6;
+    --teal-dim:#155C55;
+    --red:#FF5A5F;
+    --text:#E8EAED;
+    --text-muted:#8B93A1;
+    --text-faint:#565D68;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 50% -10%, rgba(255,159,28,0.06), transparent),
+      var(--void);
+    color:var(--text);
+    font-family:var(--font-body);
+    min-height:100vh;
+    padding:32px 20px 80px;
+  }
+
+  .wrap{ max-width:1080px; margin:0 auto; }
+
+  /* ---------- HEADER ---------- */
+  .deck-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:16px;
+    padding-bottom:20px;
+    margin-bottom:28px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .deck-title-group{ display:flex; flex-direction:column; gap:6px; }
+  .deck-eyebrow{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:2px;
+    color:var(--amber);
+    text-transform:uppercase;
+  }
+  .deck-title{
+    font-family:var(--font-display);
+    font-size:clamp(26px,4vw,36px);
+    font-weight:700;
+    letter-spacing:-0.5px;
+  }
+  .deck-clock{
+    font-family:var(--font-mono);
+    font-size:13px;
+    color:var(--text-muted);
+    text-align:right;
+    line-height:1.6;
+  }
+  .deck-clock span{ color:var(--text); font-weight:600; }
+  .deck-header-actions{ display:flex; align-items:center; justify-content:flex-end; gap:10px; }
+  .btn-sm{ padding:7px 14px; font-size:11px; }
+  .status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:var(--font-mono);
+    font-size:11px;
+    padding:3px 10px 3px 8px;
+    border-radius:20px;
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--text-muted);
+  }
+  .status-dot{ width:6px; height:6px; border-radius:50%; background:var(--teal); box-shadow:0 0 8px var(--teal); }
+
+  /* ---------- REACTOR / TIMER ---------- */
+  .reactor-section{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:32px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:32px;
+    margin-bottom:28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .reactor-section::before{
+    content:'';
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 15% 20%, rgba(255,159,28,0.05), transparent 60%);
+    pointer-events:none;
+  }
+  .reactor-core{ position:relative; width:240px; height:240px; margin:0 auto; }
+  .reactor-core svg{ transform:rotate(-90deg); width:240px; height:240px; }
+  .ring-track{ fill:none; stroke:var(--border); stroke-width:8; }
+  .ring-progress{
+    fill:none;
+    stroke:var(--amber);
+    stroke-width:8;
+    stroke-linecap:round;
+    transition:stroke-dashoffset 1s linear, stroke 0.4s ease;
+    filter:drop-shadow(0 0 6px rgba(255,159,28,0.5));
+  }
+  .ring-progress.break-mode{ stroke:var(--teal); filter:drop-shadow(0 0 6px rgba(46,196,182,0.5)); }
+  .reactor-center{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:4px;
+  }
+  .reactor-time{
+    font-family:var(--font-mono);
+    font-size:44px;
+    font-weight:700;
+    letter-spacing:-1px;
+    font-variant-numeric:tabular-nums;
+  }
+  .reactor-mode{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--amber);
+  }
+  .reactor-mode.break-mode{ color:var(--teal); }
+  .reactor-cycles{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--text-faint);
+    margin-top:2px;
+  }
+
+  .reactor-controls{ display:flex; flex-direction:column; justify-content:center; gap:20px; }
+  .reactor-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:2px;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .timer-btns{ display:flex; gap:10px; flex-wrap:wrap; }
+  .btn{
+    font-family:var(--font-mono);
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.5px;
+    padding:11px 18px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--panel-raised);
+    color:var(--text);
+    cursor:pointer;
+    transition:all 0.15s ease;
+  }
+  .btn:hover{ background:var(--panel-hover); border-color:var(--text-faint); }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{ background:var(--amber); border-color:var(--amber); color:#1A1204; }
+  .btn-primary:hover{ background:#FFB347; }
+  .btn-ghost{ background:transparent; }
+  .preset-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .preset-chip{
+    font-family:var(--font-mono);
+    font-size:11px;
+    padding:6px 12px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    background:var(--panel-raised);
+    color:var(--text-muted);
+    cursor:pointer;
+  }
+  .preset-chip.active{ border-color:var(--amber); color:var(--amber); }
+
+  /* ---------- SECTION TITLES ---------- */
+  .section-title{
+    font-family:var(--font-display);
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-title .tag{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--text-faint);
+    font-weight:400;
+  }
+
+  /* ---------- MODULE GRID ---------- */
+  .module-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap:16px;
+    margin-bottom:28px;
+  }
+  .module-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    transition:border-color 0.2s ease;
+  }
+  .module-card:hover{ border-color:var(--text-faint); }
+  .module-head{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .module-code{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--amber);
+    letter-spacing:1px;
+  }
+  .module-name{ font-family:var(--font-display); font-size:17px; font-weight:600; margin-top:4px; }
+  .module-icon{ font-size:20px; opacity:0.8; }
+  .module-desc{ font-size:12.5px; color:var(--text-muted); line-height:1.5; }
+  .progress-row{ display:flex; align-items:center; gap:10px; }
+  .progress-track{
+    flex:1; height:6px; border-radius:4px; background:var(--border-soft); overflow:hidden;
+  }
+  .progress-fill{ height:100%; background:var(--amber); border-radius:4px; transition:width 0.3s ease; }
+  .progress-pct{ font-family:var(--font-mono); font-size:12px; color:var(--text-muted); min-width:32px; text-align:right; }
+  
+  /* ---------- AUTO-TRACKED SLIDER (read-only) ---------- */
+  .module-slider{
+    -webkit-appearance:none;
+    width:100%; height:4px; border-radius:4px;
+    background:var(--border-soft);
+    outline:none;
+  }
+  .module-slider[disabled]{
+    opacity:0.55;
+    cursor:default;
+  }
+  .module-slider::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:14px; height:14px; border-radius:50%;
+    background:var(--amber); cursor:pointer;
+    border:2px solid var(--void);
+  }
+  .module-slider[disabled]::-webkit-slider-thumb{
+    background:var(--teal);
+    cursor:default;
+  }
+  .auto-tag{
+    font-family:var(--font-mono);
+    font-size:9.5px;
+    letter-spacing:1px;
+    color:var(--text-faint);
+    text-transform:uppercase;
+  }
+
+  /* ---------- FORM ---------- */
+  .form-panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:28px;
+    margin-bottom:28px;
+  }
+  .form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-bottom:18px;
+  }
+  .field{ display:flex; flex-direction:column; gap:8px; }
+  .field.full{ grid-column:1 / -1; }
+  .field label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--text-faint);
+  }
+  .field input, .field textarea{
+    background:var(--panel-raised);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:14px;
+    resize:vertical;
+    transition:border-color 0.15s ease;
+  }
+  .field input:focus, .field textarea:focus{
+    outline:none; border-color:var(--amber);
+  }
+  .field textarea{ min-height:80px; }
+  .field.mistake textarea{ border-color:rgba(255,90,95,0.25); }
+  .field.mistake textarea:focus{ border-color:var(--red); }
+
+  /* ---------- DETECTED TOPIC PILLS ---------- */
+  .detected-topics{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    min-height:0;
+  }
+  .topic-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-family:var(--font-mono);
+    font-size:11px;
+    padding:4px 10px;
+    border-radius:20px;
+    background:var(--panel-raised);
+    border:1px solid var(--teal-dim);
+    color:var(--teal);
+    animation:pill-pop 0.25s ease;
+    white-space:nowrap;
+  }
+  .topic-pill.is-new{ border-color:var(--amber); color:var(--amber); }
+  .topic-pill .pill-mod{ color:var(--text-faint); }
+  @keyframes pill-pop{
+    from{ opacity:0; transform:translateY(-4px) scale(0.9); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  .detected-topics-empty{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--text-faint);
+  }
+
+  .submit-row{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .submit-status{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--text-muted);
+  }
+  .submit-status.ok{ color:var(--teal); }
+  .submit-status.err{ color:var(--red); }
+
+  /* ---------- STATS OVERLAY ---------- */
+  .stats-overlay{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    padding:60px 20px;
+    overflow-y:auto;
+    background:rgba(5,6,8,0.72);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+  }
+  .stats-overlay.open{ display:flex; }
+  .stats-panel{
+    width:100%;
+    max-width:720px;
+    background:rgba(18,21,26,0.68);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:28px;
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    box-shadow:0 24px 70px rgba(0,0,0,0.55);
+    animation:stats-in 0.25s ease;
+  }
+  @keyframes stats-in{
+    from{ opacity:0; transform:translateY(14px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .stats-panel-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:26px;
+  }
+  .stats-title{ font-family:var(--font-display); font-size:24px; font-weight:700; margin-top:4px; }
+
+  .stats-hero-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:14px;
+    margin-bottom:30px;
+  }
+  .stats-hero-card{
+    background:var(--panel-raised);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 12px;
+    text-align:center;
+  }
+  .stats-hero-card.streak{ border-color:rgba(255,159,28,0.35); }
+  .stats-hero-label{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    margin-bottom:10px;
+  }
+  .stats-hero-value{
+    font-family:var(--font-mono);
+    font-size:28px;
+    font-weight:700;
+    color:var(--teal);
+    font-variant-numeric:tabular-nums;
+  }
+  .stats-hero-card.streak .stats-hero-value{ color:var(--amber); }
+  .stats-hero-unit{ font-size:11px; color:var(--text-faint); margin-left:4px; font-weight:400; }
+
+  .stats-section-title{
+    font-family:var(--font-display);
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:14px;
+  }
+
+  .stats-chart{
+    display:flex;
+    align-items:flex-end;
+    gap:8px;
+    height:150px;
+    margin-bottom:30px;
+    padding:0 2px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .chart-col{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    height:100%;
+    gap:6px;
+  }
+  .chart-bar-track{ flex:1; width:100%; display:flex; align-items:flex-end; }
+  .chart-bar{
+    width:100%;
+    border-radius:6px 6px 2px 2px;
+    background:linear-gradient(180deg, var(--amber), var(--amber-dim));
+    min-height:3px;
+    transition:height 0.6s ease;
+  }
+  .chart-bar.today{ background:linear-gradient(180deg, var(--teal), var(--teal-dim)); }
+  .chart-hours{ font-family:var(--font-mono); font-size:10px; color:var(--text-muted); min-height:12px; }
+  .chart-day{ font-family:var(--font-mono); font-size:10px; color:var(--text-faint); text-transform:uppercase; }
+
+  .stats-yesterday{
+    background:var(--panel-raised);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 20px;
+  }
+  .stats-yesterday-empty{ font-family:var(--font-mono); font-size:12.5px; color:var(--text-faint); }
+  .stats-yesterday-hours{ font-family:var(--font-mono); font-size:13px; color:var(--teal); margin-bottom:8px; }
+  .stats-yesterday-topics{ font-size:13.5px; line-height:1.6; color:var(--text); }
+
+  footer{
+    text-align:center;
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--text-faint);
+    margin-top:20px;
+  }
+
+  /* ---------- MOBILE RESPONSIVE OPTIMIZATION ---------- */
+  @media(max-width: 640px){
+    body { padding: 16px 12px 60px; }
+    .deck-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .deck-clock { text-align: left; }
+    .reactor-section { grid-template-columns: 1fr; padding: 24px 16px; gap: 24px; }
+    .reactor-controls { align-items: center; text-align: center; }
+    .preset-row, .timer-btns { justify-content: center; }
+    .form-panel { padding: 20px 16px; }
+    .form-grid { grid-template-columns: 1fr; gap: 14px; }
+    .btn { width: 100%; text-align: center; padding: 14px 18px; }
+    .timer-btns { width: 100%; }
+    .timer-btns .btn { width: auto; flex: 1; min-width: 100px; }
+    .submit-row { flex-direction: column; align-items: flex-start; }
+    #btn-submit { width: 100%; }
+    .stats-overlay{ padding:24px 12px; }
+    .stats-panel{ padding:20px; }
+    .stats-hero-grid{ grid-template-columns:1fr 1fr; }
+    .stats-hero-card:nth-child(3){ grid-column:1 / -1; }
+    .stats-chart{ height:120px; gap:5px; }
+    .stats-hero-value{ font-size:24px; }
+    .deck-header-actions{ justify-content:flex-start; }
+  }
+
+  :focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="deck-header">
+    <div class="deck-title-group">
+      <div class="deck-eyebrow">CSE-IoT &middot; Semester 03</div>
+      <div class="deck-title">Study Deck</div>
+    </div>
+    <div class="deck-clock">
+      <div class="deck-header-actions">
+        <div class="status-pill"><span class="status-dot"></span> LIVE SESSION</div>
+        <button class="btn btn-ghost btn-sm" id="btn-stats">📊 Stats</button>
+      </div>
+      <div style="margin-top:8px;">Today &mdash; <span id="today-date">--</span></div>
+    </div>
+  </div>
+
+  <!-- STATS OVERLAY -->
+  <div class="stats-overlay" id="stats-overlay">
+    <div class="stats-panel">
+      <div class="stats-panel-head">
+        <div>
+          <div class="deck-eyebrow">Study Deck</div>
+          <div class="stats-title">Stats &amp; Insights</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="btn-stats-close">&larr; Back to Deck</button>
+      </div>
+
+      <div class="stats-hero-grid">
+        <div class="stats-hero-card">
+          <div class="stats-hero-label">Total Hours</div>
+          <div class="stats-hero-value" id="stat-total-hours">0</div>
+        </div>
+        <div class="stats-hero-card">
+          <div class="stats-hero-label">Questions Solved</div>
+          <div class="stats-hero-value" id="stat-total-questions">0</div>
+        </div>
+        <div class="stats-hero-card streak">
+          <div class="stats-hero-label">Current Streak</div>
+          <div class="stats-hero-value" id="stat-streak">0<span class="stats-hero-unit">days</span></div>
+        </div>
+      </div>
+
+      <div class="stats-section-title">Last 7 Days</div>
+      <div class="stats-chart" id="stats-chart"></div>
+
+      <div class="stats-section-title">Yesterday's Review</div>
+      <div class="stats-yesterday" id="stats-yesterday"></div>
+    </div>
+  </div>
+
+  <!-- REACTOR / POMODORO -->
+  <div class="reactor-section">
+    <div class="reactor-core">
+      <svg viewBox="0 0 240 240">
+        <circle class="ring-track" cx="120" cy="120" r="108"></circle>
+        <circle id="ring-progress" class="ring-progress" cx="120" cy="120" r="108"
+          stroke-dasharray="678.6" stroke-dashoffset="0"></circle>
+      </svg>
+      <div class="reactor-center">
+        <div class="reactor-time" id="timer-display">25:00</div>
+        <div class="reactor-mode" id="timer-mode">FOCUS</div>
+        <div class="reactor-cycles" id="timer-cycles">CYCLE 0 &middot; 0 COMPLETED</div>
+      </div>
+    </div>
+    <div class="reactor-controls">
+      <div>
+        <div class="reactor-label">Session Length</div>
+        <div class="preset-row" id="preset-row">
+          <div class="preset-chip active" data-focus="25" data-break="5">25 / 5</div>
+          <div class="preset-chip" data-focus="50" data-break="10">50 / 10</div>
+          <div class="preset-chip" data-focus="90" data-break="15">90 / 15</div>
+        </div>
+      </div>
+      <div>
+        <div class="reactor-label">Controls</div>
+        <div class="timer-btns">
+          <button class="btn btn-primary" id="btn-start">Start Focus</button>
+          <button class="btn" id="btn-pause">Pause</button>
+          <button class="btn btn-ghost" id="btn-reset">Reset</button>
+          <button class="btn btn-ghost" id="btn-skip">Skip to Break</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULES -->
+  <div class="section-title">Semester Goals <span class="tag">// auto-tracked from your inputs</span></div>
+  <div class="module-grid" id="module-grid"></div>
+
+  <!-- DAILY FORM -->
+  <div class="section-title">Log Today's Grind <span class="tag">// submits straight to your sheet</span></div>
+  <div class="form-panel">
+    <div class="form-grid">
+      <div class="field">
+        <label for="f-questions">Questions Solved</label>
+        <input type="number" id="f-questions" min="0" placeholder="e.g. 6">
+      </div>
+      <div class="field">
+        <label for="f-hours">Hours Studied</label>
+        <input type="number" id="f-hours" min="0" step="0.5" placeholder="e.g. 4.5">
+      </div>
+      <div class="field full">
+        <label for="f-topics">Topics Covered</label>
+        <!-- SPELLCHECK AND AUTOCOMPLETE DISABLED HERE -->
+        <input type="text" id="f-topics" spellcheck="false" autocomplete="off" placeholder="e.g. Logic gates, linked list, threading, deadlock">
+        <div class="detected-topics" id="detected-topics"></div>
+      </div>
+      <div class="field full mistake">
+        <label for="f-mistakes">What I Messed Up Today</label>
+        <textarea id="f-mistakes" spellcheck="false" autocomplete="off" placeholder="Be honest. This is the part that actually improves you."></textarea>
+      </div>
+    </div>
+    <div class="submit-row">
+      <button class="btn btn-primary" id="btn-submit">Submit Day</button>
+      <span class="submit-status" id="submit-status"></span>
+    </div>
+  </div>
+
+  <footer>STUDY DECK &middot; BUILT FOR SEM-03 &middot; DATA LOGGED TO GOOGLE SHEETS</footer>
+</div>
+
+<script>
+/* ============================================================
+   0. CONFIG - UPDATE YOUR WEB APP URL HERE
+   ============================================================ */
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzkyBJRmrZZBQ1GBtsmVHYi3Hctsor9ZbSwCT-VXfmmgEiUYnN4-nGrU6inyTJkbbqv/exec";
+
+/* ============================================================
+   1. CLOCK & TIMER
+   ============================================================ */
+function updateDateDisplay(){
+  const now = new Date();
+  document.getElementById('today-date').textContent = now.toLocaleDateString('en-IN', {
+    weekday:'long', year:'numeric', month:'long', day:'numeric'
+  });
+}
+updateDateDisplay();
+
+const RING_CIRCUMFERENCE = 2 * Math.PI * 108;
+const ringEl = document.getElementById('ring-progress');
+ringEl.setAttribute('stroke-dasharray', RING_CIRCUMFERENCE.toFixed(1));
+
+let focusMinutes = 25;
+let breakMinutes = 5;
+let isBreak = false;
+let secondsLeft = focusMinutes * 60;
+let totalSeconds = focusMinutes * 60;
+let timerInterval = null;
+let isRunning = false;
+let cyclesCompleted = 0;
+
+const timerDisplay = document.getElementById('timer-display');
+const timerMode = document.getElementById('timer-mode');
+const timerCycles = document.getElementById('timer-cycles');
+
+function formatTime(s){
+  const m = Math.floor(s/60).toString().padStart(2,'0');
+  const sec = (s%60).toString().padStart(2,'0');
+  return `${m}:${sec}`;
+}
+
+function renderTimer(){
+  timerDisplay.textContent = formatTime(secondsLeft);
+  timerMode.textContent = isBreak ? 'BREAK' : 'FOCUS';
+  timerMode.classList.toggle('break-mode', isBreak);
+  ringEl.classList.toggle('break-mode', isBreak);
+  timerCycles.textContent = `CYCLE ${cyclesCompleted + 1} · ${cyclesCompleted} COMPLETED`;
+
+  const progress = 1 - (secondsLeft / totalSeconds);
+  const offset = RING_CIRCUMFERENCE * (1 - progress);
+  ringEl.style.strokeDashoffset = offset.toFixed(1);
+}
+
+function playChime(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = isBreak ? 440 : 660;
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.8);
+  }catch(e){}
+}
+
+function switchMode(){
+  if(!isBreak){ cyclesCompleted++; }
+  isBreak = !isBreak;
+  secondsLeft = (isBreak ? breakMinutes : focusMinutes) * 60;
+  totalSeconds = secondsLeft;
+  playChime();
+  renderTimer();
+}
+
+function tick(){
+  secondsLeft--;
+  if(secondsLeft < 0){ switchMode(); return; }
+  renderTimer();
+}
+
+document.getElementById('btn-start').addEventListener('click', () => {
+  if(isRunning) return;
+  isRunning = true;
+  timerInterval = setInterval(tick, 1000);
+  document.getElementById('btn-start').textContent = isBreak ? 'Resume Break' : 'Resume Focus';
+});
+document.getElementById('btn-pause').addEventListener('click', () => {
+  isRunning = false; clearInterval(timerInterval);
+});
+document.getElementById('btn-reset').addEventListener('click', () => {
+  isRunning = false; clearInterval(timerInterval);
+  isBreak = false; secondsLeft = focusMinutes * 60; totalSeconds = secondsLeft; cyclesCompleted = 0;
+  document.getElementById('btn-start').textContent = 'Start Focus'; renderTimer();
+});
+document.getElementById('btn-skip').addEventListener('click', () => {
+  isRunning = false; clearInterval(timerInterval); switchMode();
+});
+document.querySelectorAll('.preset-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    focusMinutes = parseInt(chip.dataset.focus, 10);
+    breakMinutes = parseInt(chip.dataset.break, 10);
+    document.getElementById('btn-reset').click();
+  });
+});
+renderTimer();
+
+/* ============================================================
+   3. GOAL MODULES — 6 Subject Integration
+   ============================================================ */
+const SYLLABUS = {
+  "DIG-301": {
+    icon: '⚡', name: 'Digital Electronics', desc: 'Logic gates, Boolean algebra, K-map, Multiplexer, Flip flops, Shift registers, A/D and D/A converters, Semiconductor memories.',
+    topics: [
+      { name: 'Logic Families & Gates', keywords: ['logic gates', 'boolean algebra', 'cmos', 'ttl', 'nand', 'nor', 'exclusive-or'] },
+      { name: 'Combinational Circuits', keywords: ['k-map', 'multiplexer', 'decoder', 'adder', 'subtractor', 'alu', 'parity checker'] },
+      { name: 'Sequential Circuits', keywords: ['latch', 'flip flop', 'shift register', 'ring counter', 'ripple counter', 'synchronous counter'] },
+      { name: 'A/D & D/A Converters', keywords: ['a/d converter', 'd/a converter', 'quantization', 'sample and hold'] },
+      { name: 'Memories & PLDs', keywords: ['rom', 'ram', 'fpga', 'cpld', 'programmable logic'] }
+    ]
+  },
+  "DSA-302": {
+    icon: '⌘', name: 'Data Structure & Algorithms', desc: 'Stacks, Queues, Linked Lists, Searching, Sorting, Hashing, Trees (BST, AVL, B Tree), Graph.',
+    topics: [
+      { name: 'Intro & Asymptotics', keywords: ['asymptotic', 'time-space', 'complexity'] },
+      { name: 'Stacks & Queues', keywords: ['stack', 'queue', 'circular queue', 'priority queue', 'expression conversion'] },
+      { name: 'Linked Lists', keywords: ['linked list', 'singly linked', 'doubly linked', 'circular linked'] },
+      { name: 'Searching & Sorting', keywords: ['linear search', 'binary search', 'bubble sort', 'insertion sort', 'quick sort', 'merge sort', 'heap sort', 'hashing'] },
+      { name: 'Trees', keywords: ['binary tree', 'bst', 'avl tree', 'b tree', 'b+ tree', 'tree traversal'] },
+      { name: 'Graphs', keywords: ['graph', 'graph search', 'graph traversal'] }
+    ]
+  },
+  "JAV-303": {
+    icon: '☕', name: 'OOP Using JAVA', desc: 'Objects, Classes, Inheritance, Interfaces, Exception Handling, Multithreading, Files, JDBC.',
+    topics: [
+      { name: 'Java Basics', keywords: ['jdk', 'jre', 'jvm', 'control structures', 'java methods'] },
+      { name: 'Objects & Constructors', keywords: ['object', 'class', 'constructor', 'overloading', 'access modifier', 'garbage collection'] },
+      { name: 'Inheritance & Interfaces', keywords: ['inheritance', 'super keyword', 'polymorphism', 'dynamic binding', 'interface', 'abstract class', 'packages'] },
+      { name: 'Exception Handling', keywords: ['exception', 'try', 'catch', 'throw', 'finally'] },
+      { name: 'Multithreading', keywords: ['thread', 'multithreading', 'synchronization', 'thread priority'] },
+      { name: 'Collections & Database', keywords: ['file management', 'byte stream', 'collection framework', 'array list', 'hash set', 'jdbc'] }
+    ]
+  },
+  "MAT-304": {
+    icon: '➗', name: 'Discrete Math & Graphs', desc: 'Sets, Relation, Principle of Mathematical Induction, Propositional Logic, Proof Techniques, Algebraic Structures, Graphs and Trees.',
+    topics: [
+      { name: 'Sets & Functions', keywords: ['sets', 'relation', 'bijective', 'cantor'] },
+      { name: 'Induction & Counting', keywords: ['mathematical induction', 'euclidean algorithm', 'pigeon-hole', 'permutation', 'combination'] },
+      { name: 'Propositional Logic', keywords: ['propositional logic', 'truth table', 'quantifiers'] },
+      { name: 'Proof Techniques', keywords: ['proof', 'contradiction', 'contraposition'] },
+      { name: 'Algebraic Structures', keywords: ['semi group', 'monoid', 'boolean algebra', 'rings', 'fields'] },
+      { name: 'Advanced Graphs', keywords: ['eulerian', 'hamiltonian', 'graph coloring', 'planar graph', 'shortest distance'] }
+    ]
+  },
+  "SYS-305": {
+    icon: '💻', name: 'Operating System', desc: 'Processes, Threads, Scheduling, Inter-process Communication, Deadlocks, Memory Management, File Management.',
+    topics: [
+      { name: 'OS Fundamentals', keywords: ['system calls', 'monolithic', 'microkernel', 'virtual machine'] },
+      { name: 'Processes & Threads', keywords: ['pcb', 'context switching', 'thread', 'scheduler', 'fcfs', 'sjf', 'rr'] },
+      { name: 'IPC & Synchronization', keywords: ['race condition', 'mutual exclusion', 'semaphore', 'monitor', 'message passing'] },
+      { name: 'Deadlocks', keywords: ['deadlock', 'banker', 'deadlock detection'] },
+      { name: 'Memory Management', keywords: ['paging', 'segmentation', 'virtual memory', 'page fault', 'fifo', 'lru'] },
+      { name: 'File & Disk Management', keywords: ['directory structure', 'disk scheduling', 'sstf', 'scan', 'dma'] }
+    ]
+  },
+  "HUM-306": {
+    icon: '🧘', name: 'Values & IKS', desc: 'Universal Human Values and Indian Knowledge System.',
+    topics: [
+      { name: 'Human Values', keywords: ['human values', 'harmony', 'happiness', 'prosperity', 'co-existence'] },
+      { name: 'Indian Knowledge System', keywords: ['iks', 'vedangas', 'ayurveda', 'vastu', 'yoga'] }
+    ]
+  }
+};
+
+const MODULE_ORDER = ['DIG-301', 'DSA-302', 'JAV-303', 'MAT-304', 'SYS-305', 'HUM-306'];
+const STORAGE_KEY = 'studyDeck.completedTopics.v2'; // Bumped version for new syllabus map
+
+function loadCompletedState_() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch (e) { return {}; }
+}
+function saveCompletedState_(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+let completedState = loadCompletedState_();
+MODULE_ORDER.forEach(code => { if (!completedState[code]) completedState[code] = []; });
+
+const moduleGrid = document.getElementById('module-grid');
+MODULE_ORDER.forEach((code, i) => {
+  const m = SYLLABUS[code];
+  const card = document.createElement('div');
+  card.className = 'module-card';
+  card.innerHTML = `
+    <div class="module-head">
+      <div>
+        <div class="module-code">${code} <span class="auto-tag">· auto-tracked</span></div>
+        <div class="module-name">${m.name}</div>
+      </div>
+      <div class="module-icon">${m.icon}</div>
+    </div>
+    <div class="module-desc">${m.desc}</div>
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="fill-${i}" style="width:0%"></div></div>
+      <div class="progress-pct" id="pct-${i}">0%</div>
+    </div>
+    <input type="range" class="module-slider" id="slider-${i}" min="0" max="100" value="0" disabled>
+  `;
+  moduleGrid.appendChild(card);
+});
+
+function moduleIndex_(code) { return MODULE_ORDER.indexOf(code); }
+
+function updateModuleUI_(code) {
+  const i = moduleIndex_(code);
+  const totalTopics = SYLLABUS[code].topics.length;
+  const completedCount = completedState[code].length;
+  const pct = totalTopics === 0 ? 0 : Math.round((completedCount / totalTopics) * 100);
+
+  const fill = document.getElementById(`fill-${i}`);
+  const pctEl = document.getElementById(`pct-${i}`);
+  const slider = document.getElementById(`slider-${i}`);
+
+  fill.style.width = pct + '%';
+  pctEl.textContent = pct + '%';
+  slider.value = pct;
+}
+
+function refreshAllModuleUI_() { MODULE_ORDER.forEach(updateModuleUI_); }
+refreshAllModuleUI_();
+
+function escapeRegex_(str) { return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function textContainsKeyword_(text, keyword) {
+  const pattern = new RegExp(`(?:^|[^a-z0-9])${escapeRegex_(keyword)}(?:$|[^a-z0-9])`, 'i');
+  return pattern.test(` ${text} `);
+}
+
+// FIX: Only detects visually, DOES NOT save to state or update UI sliders anymore
+function parseTopicsInput_(rawText) {
+  const text = rawText.toLowerCase();
+  const detected = [];
+
+  MODULE_ORDER.forEach(code => {
+    SYLLABUS[code].topics.forEach(topic => {
+      const isMatch = topic.keywords.some(kw => textContainsKeyword_(text, kw));
+      if (!isMatch) return;
+      const alreadyCompleted = completedState[code].includes(topic.name);
+      detected.push({ module: code, name: topic.name, isNew: !alreadyCompleted });
+    });
+  });
+
+  renderDetectedPills_(detected);
+  return detected;
+}
+
+function renderDetectedPills_(detected) {
+  const container = document.getElementById('detected-topics');
+  container.innerHTML = '';
+  if (detected.length === 0) {
+    container.innerHTML = `<span class="detected-topics-empty">No syllabus topics detected yet — try mentioning a topic by name.</span>`;
+    return;
+  }
+  
+  const shortCode = { 'DIG-301': 'DIG', 'DSA-302': 'DSA', 'JAV-303': 'JAV', 'MAT-304': 'MAT', 'SYS-305': 'SYS', 'HUM-306': 'HUM' };
+  detected.forEach(d => {
+    const pill = document.createElement('span');
+    pill.className = 'topic-pill' + (d.isNew ? ' is-new' : '');
+    pill.innerHTML = `✓ ${d.name} <span class="pill-mod">(${shortCode[d.module] || d.module})</span>`;
+    container.appendChild(pill);
+  });
+}
+
+const topicsInput = document.getElementById('f-topics');
+let parseDebounceTimer = null;
+topicsInput.addEventListener('input', () => {
+  clearTimeout(parseDebounceTimer);
+  parseDebounceTimer = setTimeout(() => parseTopicsInput_(topicsInput.value), 400);
+});
+topicsInput.addEventListener('blur', () => parseTopicsInput_(topicsInput.value));
+if (topicsInput.value) parseTopicsInput_(topicsInput.value);
+
+function moduleProgressPct_(code) {
+  const total = SYLLABUS[code].topics.length;
+  const done = completedState[code].length;
+  return total === 0 ? 0 : Math.round((done / total) * 100);
+}
+
+/* ============================================================
+   4. DAILY SUBMISSION & DATA LOGGING
+   ============================================================ */
+const submitBtn = document.getElementById('btn-submit');
+const submitStatus = document.getElementById('submit-status');
+
+submitBtn.addEventListener('click', async () => {
+  // 1. Detect topics from current input
+  const topicsField = document.getElementById('f-topics');
+  const detected = parseTopicsInput_(topicsField.value || '');
+  let stateChanged = false;
+
+  // 2. Update state memory ONLY on submit
+  detected.forEach(d => {
+    if (d.isNew) {
+      completedState[d.module].push(d.name);
+      stateChanged = true;
+    }
+  });
+
+  // 3. Save and refresh UI if changed
+  if (stateChanged) {
+    saveCompletedState_(completedState);
+    refreshAllModuleUI_();
+  }
+
+  // 4. Construct payload using updated percentages
+  const payload = {
+    date: new Date().toISOString().split('T')[0],
+    questionsSolved: document.getElementById('f-questions').value || 0,
+    hoursStudied: document.getElementById('f-hours').value || 0,
+    topicsCovered: topicsField.value || '',
+    messedUpToday: document.getElementById('f-mistakes').value || '',
+    digProgress: moduleProgressPct_('DIG-301'),
+    dsaProgress: moduleProgressPct_('DSA-302'),
+    javProgress: moduleProgressPct_('JAV-303'),
+    matProgress: moduleProgressPct_('MAT-304'),
+    sysProgress: moduleProgressPct_('SYS-305'),
+    humProgress: moduleProgressPct_('HUM-306'),
+  };
+
+  // 5. Dual save: Log to local history for Stats dashboard
+  upsertHistoryEntry_({
+    date: payload.date,
+    hours: Number(payload.hoursStudied) || 0,
+    questions: Number(payload.questionsSolved) || 0,
+    topics: payload.topicsCovered
+  });
+
+  if(WEB_APP_URL.includes('PASTE_YOUR')){
+    submitStatus.textContent = 'Set WEB_APP_URL in the script before submitting.';
+    submitStatus.className = 'submit-status err';
+    return;
+  }
+
+  submitStatus.textContent = 'Submitting…';
+  submitStatus.className = 'submit-status';
+  submitBtn.disabled = true;
+
+  try{
+    await fetch(WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    submitStatus.textContent = '✓ Day logged to your sheet.';
+    submitStatus.className = 'submit-status ok';
+
+    // 6. Clear the form for the next day
+    document.getElementById('f-questions').value = '';
+    document.getElementById('f-hours').value = '';
+    topicsField.value = '';
+    document.getElementById('f-mistakes').value = '';
+    document.getElementById('detected-topics').innerHTML = '';
+
+  }catch(err){
+    submitStatus.textContent = '✗ Could not reach the Apps Script URL. Check WEB_APP_URL and deployment access.';
+    submitStatus.className = 'submit-status err';
+    console.error(err);
+  }finally{
+    submitBtn.disabled = false;
+  }
+});
+
+/* ============================================================
+   5. STATS & INSIGHTS DASHBOARD
+   ============================================================ */
+const HISTORY_KEY = 'studyDeck.history.v1';
+
+function loadHistory_() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+function saveHistory_(history) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+// One entry per date — resubmitting the same day overwrites, not duplicates.
+function upsertHistoryEntry_(entry) {
+  const history = loadHistory_();
+  const idx = history.findIndex(h => h.date === entry.date);
+  if (idx >= 0) { history[idx] = entry; } else { history.push(entry); }
+  saveHistory_(history);
+  return history;
+}
+
+function fmtDate_(d) { return d.toISOString().split('T')[0]; }
+
+function calcStreak_(history) {
+  const dates = new Set(history.map(h => h.date));
+  const cursor = new Date();
+  if (!dates.has(fmtDate_(cursor))) {
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  let streak = 0;
+  while (dates.has(fmtDate_(cursor))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
+function renderStats_() {
+  const history = loadHistory_();
+  const byDate = {};
+  history.forEach(h => { byDate[h.date] = h; });
+
+  // Hero stats
+  const totalHours = history.reduce((sum, h) => sum + (Number(h.hours) || 0), 0);
+  const totalQuestions = history.reduce((sum, h) => sum + (Number(h.questions) || 0), 0);
+  const streak = calcStreak_(history);
+
+  document.getElementById('stat-total-hours').textContent =
+    Number.isInteger(totalHours) ? totalHours : totalHours.toFixed(1);
+  document.getElementById('stat-total-questions').textContent = totalQuestions;
+  document.getElementById('stat-streak').innerHTML =
+    `${streak}<span class="stats-hero-unit">day${streak === 1 ? '' : 's'}</span>`;
+
+  // Last 7 days chart
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = fmtDate_(d);
+    const entry = byDate[dateStr];
+    days.push({
+      label: d.toLocaleDateString('en-IN', { weekday: 'short' }),
+      hours: Number(entry && entry.hours) || 0,
+      isToday: i === 0
+    });
+  }
+  const maxHours = Math.max(1, ...days.map(d => d.hours));
+
+  const chart = document.getElementById('stats-chart');
+  chart.innerHTML = '';
+  days.forEach(d => {
+    const heightPct = d.hours > 0 ? Math.max(4, Math.round((d.hours / maxHours) * 100)) : 2;
+    const col = document.createElement('div');
+    col.className = 'chart-col';
+    col.innerHTML = `
+      <div class="chart-hours">${d.hours > 0 ? d.hours : ''}</div>
+      <div class="chart-bar-track"><div class="chart-bar ${d.isToday ? 'today' : ''}" style="height:${heightPct}%"></div></div>
+      <div class="chart-day">${d.label}</div>
+    `;
+    chart.appendChild(col);
+  });
+
+  // Yesterday's review
+  const y = new Date();
+  y.setDate(y.getDate() - 1);
+  const yEntry = byDate[fmtDate_(y)];
+  const yesterdayEl = document.getElementById('stats-yesterday');
+  if (yEntry) {
+    yesterdayEl.innerHTML = `
+      <div class="stats-yesterday-hours">⏱ ${yEntry.hours || 0} hrs studied &middot; ${yEntry.questions || 0} questions solved</div>
+      <div class="stats-yesterday-topics">${yEntry.topics ? yEntry.topics : 'No topics logged.'}</div>
+    `;
+  } else {
+    yesterdayEl.innerHTML = `<span class="stats-yesterday-empty">No entry logged for yesterday.</span>`;
+  }
+}
+
+const statsOverlay = document.getElementById('stats-overlay');
+document.getElementById('btn-stats').addEventListener('click', () => {
+  renderStats_();
+  statsOverlay.classList.add('open');
+});
+document.getElementById('btn-stats-close').addEventListener('click', () => {
+  statsOverlay.classList.remove('open');
+});
+statsOverlay.addEventListener('click', (e) => {
+  if (e.target === statsOverlay) statsOverlay.classList.remove('open');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') statsOverlay.classList.remove('open');
+});
+</script>
+</body>
+</html>
